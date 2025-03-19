@@ -1,0 +1,532 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'arc_writer'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=arc-writer"
+                ],
+                "filter": {
+                    "name": "arc_writer",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'geph5_broker_protocol'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=geph5-broker-protocol"
+                ],
+                "filter": {
+                    "name": "geph5_broker_protocol",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'mizaru2'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=mizaru2"
+                ],
+                "filter": {
+                    "name": "mizaru2",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'geph5_misc_rpc'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=geph5-misc-rpc"
+                ],
+                "filter": {
+                    "name": "geph5_misc_rpc",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'sillad'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=sillad"
+                ],
+                "filter": {
+                    "name": "sillad",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'nanorpc_sillad'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=nanorpc-sillad"
+                ],
+                "filter": {
+                    "name": "nanorpc_sillad",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'picomux'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=picomux"
+                ],
+                "filter": {
+                    "name": "picomux",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'picomux-socks'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=picomux-socks",
+                    "--package=picomux"
+                ],
+                "filter": {
+                    "name": "picomux-socks",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'picomux-socks'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=picomux-socks",
+                    "--package=picomux"
+                ],
+                "filter": {
+                    "name": "picomux-socks",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'picomux-test'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=picomux-test",
+                    "--package=picomux"
+                ],
+                "filter": {
+                    "name": "picomux-test",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'picomux-test'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=picomux-test",
+                    "--package=picomux"
+                ],
+                "filter": {
+                    "name": "picomux-test",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'sillad_sosistab3'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=sillad-sosistab3"
+                ],
+                "filter": {
+                    "name": "sillad_sosistab3",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'sillad_conntest'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=sillad-conntest"
+                ],
+                "filter": {
+                    "name": "sillad_conntest",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'sillad_native_tls'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=sillad-native-tls"
+                ],
+                "filter": {
+                    "name": "sillad_native_tls",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'geph5-bridge'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=geph5-bridge",
+                    "--package=geph5-bridge"
+                ],
+                "filter": {
+                    "name": "geph5-bridge",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'geph5-bridge'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=geph5-bridge",
+                    "--package=geph5-bridge"
+                ],
+                "filter": {
+                    "name": "geph5-bridge",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'geph5-broker'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=geph5-broker",
+                    "--package=geph5-broker"
+                ],
+                "filter": {
+                    "name": "geph5-broker",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'geph5-broker'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=geph5-broker",
+                    "--package=geph5-broker"
+                ],
+                "filter": {
+                    "name": "geph5-broker",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'geph5_client'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=geph5-client"
+                ],
+                "filter": {
+                    "name": "geph5_client",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'geph5-client'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=geph5-client",
+                    "--package=geph5-client"
+                ],
+                "filter": {
+                    "name": "geph5-client",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'geph5-client'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=geph5-client",
+                    "--package=geph5-client"
+                ],
+                "filter": {
+                    "name": "geph5-client",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'egui-test'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=egui-test",
+                    "--package=geph5-client-android"
+                ],
+                "filter": {
+                    "name": "egui-test",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'egui-test'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=egui-test",
+                    "--package=geph5-client-android"
+                ],
+                "filter": {
+                    "name": "egui-test",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'geph5_client_gui'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=geph5-client-gui"
+                ],
+                "filter": {
+                    "name": "geph5_client_gui",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'geph5-client-gui'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=geph5-client-gui",
+                    "--package=geph5-client-gui"
+                ],
+                "filter": {
+                    "name": "geph5-client-gui",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'geph5-client-gui'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=geph5-client-gui",
+                    "--package=geph5-client-gui"
+                ],
+                "filter": {
+                    "name": "geph5-client-gui",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'geph5-exit'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=geph5-exit",
+                    "--package=geph5-exit"
+                ],
+                "filter": {
+                    "name": "geph5-exit",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'geph5-exit'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=geph5-exit",
+                    "--package=geph5-exit"
+                ],
+                "filter": {
+                    "name": "geph5-exit",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
