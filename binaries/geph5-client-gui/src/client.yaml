@@ -1,0 +1,22 @@
+# 本地监听
+socks5_listen: 127.0.0.1:9909
+http_proxy_listen: 127.0.0.1:9910
+pac_listen: 127.0.0.1:8909
+
+# exit 和 broker 连接设置
+exit_constraint:
+  direct: www.torchigh.com:37202/5db908cd437c5a1223e217865a29e475ed15a701eaf306d68cdbd9312b52b3bb
+bridge_mode: ForceDirect
+broker:
+  direct: http://broker.torchigh.com         # 自己的服务器域名，将本地的 4000 端口反向代理
+# 此处的 key 值与 broker 启动时提示的 key 值一致，且 mizaru key 与 geph5-exit 模块的 auth.rs 中一致
+broker_keys:
+  master: b6e9e8bf4da5598286759fb99198607b350d8e8e8c227144032f003b23c40ed2
+  mizaru_free: 2c11e0f634fbba6c9cb2b55052e831502a15c982742cb1ad41c538b776a16bb6
+  mizaru_plus: b9828650054a5ff7f9a1f2c229819e60ff72f165882e6fd0b9317abc3af8fe09
+
+credentials:
+  legacy_username_password: {username: "samlink", password: "sam197298"} 
+
+sess_metadata: {"filter":{"nsfw":false,"ads":false}}
+task_limit: 100
