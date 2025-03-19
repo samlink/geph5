@@ -1,5 +1,6 @@
 // use std::net::{Ipv4Addr, SocketAddrV4};
 
+use geph5_broker_protocol::Credential;
 // use base32::Alphabet;
 // use geph5_broker_protocol::Credential;
 use geph5_client::{BridgeMode, BrokerSource, Config};
@@ -18,6 +19,7 @@ pub fn get_config() -> anyhow::Result<Config> {
     let yaml: serde_yaml::Value = DEFAULT_SETTINGS.to_owned();
     let json: serde_json::Value = serde_json::to_value(&yaml)?;
     let mut cfg: Config = serde_json::from_value(json)?;
+    cfg.credentials = Credential::LegacyUsernamePassword { username: USERNAME.get(), password: PASSWORD.get() };
     cfg.vpn = VPN_MODE.get();
     cfg.passthrough_china = PASSTHROUGH_CHINA.get();
     Ok(cfg)
@@ -51,10 +53,10 @@ pub static CUSTOM_BROKER: Lazy<StoreCell<Option<BrokerSource>>> =
     Lazy::new(|| StoreCell::new_persistent("custom_broker_1", || None));
 
 pub static SOCKS5_PORT: Lazy<StoreCell<u16>> =
-    Lazy::new(|| StoreCell::new_persistent("socks5_port", || 9999));
+    Lazy::new(|| StoreCell::new_persistent("socks5_port", || 9909));
 
 pub static HTTP_PROXY_PORT: Lazy<StoreCell<u16>> =
-    Lazy::new(|| StoreCell::new_persistent("http_proxy_port", || 19999));
+    Lazy::new(|| StoreCell::new_persistent("http_proxy_port", || 9910));
 
 pub static VPN_MODE: Lazy<StoreCell<bool>> =
     Lazy::new(|| StoreCell::new_persistent("vpn_mode", || false));
