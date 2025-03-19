@@ -1,3 +1,3 @@
 /target
 test.yaml
-client.yaml
+/binaries/geph5-client-gui/src/client.yaml
