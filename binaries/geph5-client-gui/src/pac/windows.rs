@@ -7,6 +7,7 @@ use winapi::um::wininet::{
 use winreg::enums::*;
 use winreg::types::ToRegValue;
 use winreg::RegKey;
+use std::net::TcpStream;
 
 const HTTP_PROXY_REG_PATH: &str = r"Software\Microsoft\Windows\CurrentVersion\Internet Settings";
 
@@ -60,4 +61,9 @@ pub fn unset_http_proxy() -> anyhow::Result<()> {
     refresh_internet_options();
 
     Ok(())
+}
+
+pub fn is_proxy_port_open(proxy_address: &str) -> bool {
+    let proxy = proxy_address.split(":").collect::<Vec<&str>>();
+    TcpStream::connect((proxy[0], proxy[1].parse::<u16>().unwrap())).is_ok()
 }

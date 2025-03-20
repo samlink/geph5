@@ -8,7 +8,7 @@ use smol_timeout2::TimeoutExt;
 use crate::{
     daemon::{DAEMON_HANDLE, TOTAL_BYTES_TIMESERIES},
     l10n::{l10n, l10n_country},
-    pac::{set_http_proxy, unset_http_proxy},
+    pac::{set_http_proxy, unset_http_proxy, is_proxy_port_open},
     refresh_cell::RefreshCell,
     settings::{get_config, PROXY_AUTOCONF},
 };
@@ -93,7 +93,9 @@ impl Dashboard {
                 if ui.button(l10n("connect")).clicked() {
                     tracing::warn!("connect clicked");
                     DAEMON_HANDLE.start(get_config()?)?;
-                    if PROXY_AUTOCONF.get() {
+                    let http_proxy = format!("{}", get_config()?.http_proxy_listen.unwrap());
+
+                    if PROXY_AUTOCONF.get() && is_proxy_port_open(&http_proxy) {
                         set_http_proxy(get_config()?.http_proxy_listen.unwrap())?;
                     }
                 }

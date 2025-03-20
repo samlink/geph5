@@ -53,6 +53,8 @@ sillad = { path = "../../libraries/sillad" }
 app_dirs2 = "2.5.5"
 strip-ansi-escapes = "0.2.0"
 
+native-dialog = { version = "0.7.0", features = ["windows_dpi_awareness", "windows_visual_styles"] }
+
 [build-dependencies]
 winresource = "0.1"
 
