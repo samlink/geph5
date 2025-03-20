@@ -1,4 +1,5 @@
 use std::{net::SocketAddr, process::Command};
+use std::net::TcpStream;
 
 use anyhow::Context;
 
@@ -69,4 +70,8 @@ pub fn unset_http_proxy() -> anyhow::Result<()> {
     gsettings_result.context("Failed to disable proxy")?;
 
     Ok(())
+}
+pub fn is_proxy_port_open(proxy_address: &str) -> bool {
+    let proxy = proxy_address.split(":").collect::<Vec<&str>>();
+    TcpStream::connect((proxy[0], proxy[1].parse::<u16>().unwrap())).is_ok()
 }
