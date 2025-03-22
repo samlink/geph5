@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tauri App</title>
+</head>
+
+<body>
+  <main class="container">
+    <div id="login" hidden>
+      <div class="login-form">
+        <div class="form-group">
+          <input type="text" id="username" placeholder="用户名" required>
+        </div>
+        <div class="form-group">
+          <input type="password" id="password" placeholder="密码" required>
+        </div>
+        <button id="login-btn">登录</button>
+        <p id="login-message" class="error-message"></p>
+      </div>
+    </div>
+
+    <div id="main" hidden>
+      <div class="row status">
+        <div>状态： <span id="status">未连接</span></div>
+        <div>
+          <label>国内站点不作代理</label>
+        </div>
+      </div>
+      <div class="row buttons">
+        <form id="greet-form">
+          <button id="connect-btn">连接</button>
+          <button id="disconnect-btn">断开</button>
+        </form>
+      </div>
+      <div class="msg">
+        <p>端口地址未连接</p>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="/main.js" defer></script>
+</body>
+
+</html>

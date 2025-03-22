@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug Tauri",
+            "program": "${workspaceFolder}/src-tauri/target/debug/gephui.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/src-tauri",
+            "preLaunchTask": "rust: cargo build",  // 可选：在调试前先构建项目
+        }
+    ],
+    "compounds": []
+}
