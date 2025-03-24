@@ -18,13 +18,15 @@ mod prefs;
 mod settings;
 mod login;
 
+use login::check_login;
+
 const PATH: &str = ".";
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![connect, disconnect, is_login])
+        .invoke_handler(tauri::generate_handler![connect, disconnect, is_login, check_login])
         .setup(|app| {
             // if check_running() {
             // native_dialog::MessageDialog::new()

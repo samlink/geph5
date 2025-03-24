@@ -1,6 +1,6 @@
 const { invoke } = window.__TAURI__.core;
 
-// 登录相关元素
+// 登录页面元素
 const loginForm = document.querySelector("#login");
 const mainContent = document.querySelector("#main");
 const loginBtn = document.querySelector("#login-btn");
@@ -8,7 +8,7 @@ const usernameInput = document.querySelector("#username");
 const passwordInput = document.querySelector("#password");
 const loginMessage = document.querySelector("#login-message");
 
-// 原有元素
+// 主页面元素
 const connectBtn = document.querySelector("#connect-btn");
 const disconnectBtn = document.querySelector("#disconnect-btn");
 const vpnCheck = document.querySelector("#all-proxy");
@@ -45,13 +45,13 @@ loginBtn.addEventListener("click", async (e) => {
   }
 
   try {
-    const result = await invoke("login", { username, password });
-    if (result === "success") {
+    const result = await invoke("check_login", { username, password });
+    if (result.success) {
       loginForm.hidden = true;
       mainContent.hidden = false;
       loginMessage.textContent = "";
     } else {
-      loginMessage.textContent = "用户名或密码错误";
+      loginMessage.textContent = result.message;
     }
   } catch (error) {
     loginMessage.textContent = "登录失败，请重试";

@@ -1,64 +1,75 @@
 use geph5_broker_protocol::{BrokerClient, Credential};
 use poll_promise::Promise;
+use serde::Serialize;
 
 use crate::settings::{PASSWORD, USERNAME, get_config};
 
-pub struct Login {
-    username: String,
-    password: String,
+// pub struct Login {
+//     username: String,
+//     password: String,
 
-    check_login: Option<Promise<anyhow::Result<()>>>,
+//     check_login: Option<Promise<Result<LoginResponse, String>>>,
+// }
+
+// 添加 Serialize 以支持返回值序列化
+#[derive(Debug, Serialize)]
+pub struct LoginResponse {
+    success: bool,
+    message: Option<String>,
 }
 
-impl Default for Login {
-    fn default() -> Self {
-        Self::new()
-    }
-}
+// impl Default for Login {
+//     fn default() -> Self {
+//         Self::new()
+//     }
+// }
 
-impl Login {
-    pub fn new() -> Self {
-        Self {
-            username: "".to_string(),
-            password: "".to_string(),
+// impl Login {
+// pub fn new() -> Self {
+//     Self {
+//         username: "".to_string(),
+//         password: "".to_string(),
 
-            check_login: None,
-        }
-    }
+//         check_login: None,
+//     }
+// }
 
-    pub fn is_login(&self) -> bool {
-        self.check_login.is_some()
-    }
+// pub fn is_login(&self) -> bool {
+//     self.check_login.is_some()
+// }
 
-    fn check_login(&mut self) -> anyhow::Result<()> {
-        if let Some(promise) = self.check_login.as_ref() {
-            match promise.poll() {
-                std::task::Poll::Ready(ready) => match ready {
-                    Ok(_) => {
-                        self.check_login = None;
-                        USERNAME.set(self.username.clone());
-                        PASSWORD.set(self.password.clone());
-                        anyhow::Ok(())
-                    }
-                    Err(err) => {
-                        let err = format!("{:?}", err);
-                        return Err(anyhow::anyhow!(err));
-                    }
-                },
-                std::task::Poll::Pending => {
-                    return Err(anyhow::anyhow!("Pending"));
-                }
-            }
-        } else {
-            let username = self.username.clone();
-            let password = self.password.clone();
-            self.check_login = Some(Promise::spawn_thread("check_login", move || {
-                smolscale::block_on(check_login(username, password))
-            }));
+// fn check_login(&mut self) -> Result<LoginResponse, String> {
+//     if let Some(promise) = self.check_login.as_ref() {
+//         match promise.poll() {
+//             std::task::Poll::Ready(ready) => match ready {
+//                 Ok(_) => {
+//                     self.check_login = None;
+//                     USERNAME.set(self.username.clone());
+//                     PASSWORD.set(self.password.clone());
+//                     Ok(LoginResponse {
+//                         success: true,
+//                         message: None,
+//                     })
+//                 }
+//                 Err(err) => {
+//                     let err = format!("{:?}", err);
+//                     return Err(err);
+//                 }
+//             },
+//             std::task::Poll::Pending => {
+//                 return Err("Pending".to_owned());
+//             }
+//         }
+//     } else {
+//         let username = self.username.clone();
+//         let password = self.password.clone();
+//         self.check_login = Some(Promise::spawn_thread("check_login", move || {
+//             smolscale::block_on(check_login(username, password))
+//         }));
 
-            return Err(anyhow::anyhow!("Not login"));
-        }
-    }
+//         return Err("Not login".to_owned());
+//     }
+// }
 
 //     pub fn render(&mut self, ui: &mut egui::Ui) -> anyhow::Result<()> {
 //         if let Some(promise) = self.check_login.as_ref() {
@@ -128,14 +139,52 @@ impl Login {
 
 //         Ok(())
 //     }
-}
+// }
 
+#[tauri::command]
+pub async fn check_login(username: String, password: String) -> Result<LoginResponse, String> {
+    let mut config = match get_config() {
+        Ok(config) => config,
+        Err(e) => {
+            return Ok(LoginResponse {
+                success: false,
+                message: Some(format!("Failed to get config: {}", e)),
+            });
+        }
+    };
 
-async fn check_login(username: String, password: String) -> anyhow::Result<()> {
-    let mut config = get_config()?;
+    let user: String = username.clone();
+    let pass: String = password.clone();
+
     config.credentials = Credential::LegacyUsernamePassword { username, password };
-    let rpc_transport = config.broker.unwrap().rpc_transport();
-    let client = BrokerClient::from(rpc_transport);
-    client.get_auth_token(config.credentials.clone()).await??;
-    Ok(())
+
+    match config.broker {
+        Some(broker) => {
+            let rpc_transport = broker.rpc_transport();
+            let client = BrokerClient::from(rpc_transport);
+
+            match client.get_auth_token(config.credentials.clone()).await {
+                Ok(Ok(_)) => {
+                    USERNAME.set(user);
+                    PASSWORD.set(pass);
+                    Ok(LoginResponse {
+                        success: true,
+                        message: None,
+                    })
+                }
+                Ok(Err(e)) => Ok(LoginResponse {
+                    success: false,
+                    message: Some(format!("Auth error: {:?}", e)),
+                }),
+                Err(e) => Ok(LoginResponse {
+                    success: false,
+                    message: Some(format!("RPC error: {:?}", e)),
+                }),
+            }
+        }
+        None => Ok(LoginResponse {
+            success: false,
+            message: Some("No broker configured".to_string()),
+        }),
+    }
 }
