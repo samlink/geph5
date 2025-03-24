@@ -7,14 +7,19 @@ use std::{
     collections::BTreeMap,
     ops::Deref as _,
     sync::{Arc, LazyLock},
-    time::Duration,
+    time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
 use moka::future::Cache;
 use rand::Rng as _;
 use sqlx::types::chrono::Utc;
 
-use crate::{database::POSTGRES, log_error};
+use crate::{
+    database::POSTGRES,
+    log_error,
+    payments::{PaymentClient, PaymentTransport},
+    CONFIG_FILE,
+};
 
 pub async fn register_secret(user_id: Option<i32>) -> anyhow::Result<String> {
     let mut txn = POSTGRES.begin().await?;
@@ -60,6 +65,24 @@ pub async fn register_secret(user_id: Option<i32>) -> anyhow::Result<String> {
         .bind(secret.clone())
         .execute(&mut *txn)
         .await?;
+
+        if user_id == 42 {
+            let code = PaymentClient(PaymentTransport)
+                .create_giftcard(CONFIG_FILE.wait().payment_support_secret.clone(), 1)
+                .await?
+                .map_err(|e| anyhow::anyhow!(e))?;
+            sqlx::query(
+                r#"
+            INSERT INTO free_vouchers (id, voucher, description) 
+            VALUES ($1, $2, $3)
+            "#,
+            )
+            .bind(user_id)
+            .bind(code.clone())
+            .bind(include_str!("free_voucher_description.json"))
+            .execute(&mut *txn)
+            .await?;
+        }
 
         txn.commit().await?;
         Ok(secret)
@@ -183,39 +206,58 @@ pub async fn get_user_info(user_id: i32) -> Result<Option<UserInfo>, AuthError> 
 
 pub async fn get_subscription_expiry(user_id: i32) -> anyhow::Result<Option<i64>> {
     static ALL_SUBSCRIPTIONS_CACHE: LazyLock<Cache<i64, Arc<BTreeMap<i32, i64>>>> =
-        LazyLock::new(|| Cache::new(10));
-    static LAST_PAYMENT_TIMESTAMP_CACHE: LazyLock<Cache<(), i64>> = LazyLock::new(|| {
+        LazyLock::new(|| {
+            Cache::builder()
+                .time_to_idle(Duration::from_secs(60))
+                .build()
+        });
+    static LAST_PAYMENT_TIMESTAMP_CACHE: LazyLock<Cache<u128, i64>> = LazyLock::new(|| {
         Cache::builder()
-            .time_to_live(Duration::from_millis(50))
+            .time_to_idle(Duration::from_secs(60))
             .build()
     });
 
+    let mut ts_missed = false;
     let last_payment_timestamp = LAST_PAYMENT_TIMESTAMP_CACHE
-        .try_get_with((), async {
-            let ts = sqlx::query_scalar::<_, i64>(
-                "SELECT EXTRACT(EPOCH FROM MAX(created_at))::bigint FROM payment_events",
-            )
-            .fetch_one(POSTGRES.deref())
-            .await?;
-            anyhow::Ok(ts)
-        })
+        .try_get_with(
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_millis()
+                / 50,
+            async {
+                let ts = sqlx::query_scalar::<_, i64>(
+                    "SELECT EXTRACT(EPOCH FROM MAX(created_at))::bigint FROM payment_events",
+                )
+                .fetch_one(POSTGRES.deref())
+                .await?;
+                ts_missed = true;
+                anyhow::Ok(ts)
+            },
+        )
         .await
         .map_err(|e| anyhow::anyhow!(e))?;
 
+    let mut sub_missed = false;
     let all_subscriptions = ALL_SUBSCRIPTIONS_CACHE
-        .try_get_with(last_payment_timestamp, async move {
+        .try_get_with(last_payment_timestamp, async {
             let all_subscriptions: Vec<(i32, i64)> = sqlx::query_as(
                 "SELECT id, EXTRACT(EPOCH FROM expires)::bigint AS unix_timestamp FROM subscriptions",
             )
             .fetch_all(POSTGRES.deref())
             .await?;
+        sub_missed = true;
             anyhow::Ok(Arc::new(all_subscriptions.into_iter().collect()))
         })
         .await
         .map_err(|e| anyhow::anyhow!(e))?;
 
+    if rand::random::<f64>() < 0.001 {
+        tracing::debug!("sub expiry missed? {ts_missed} {sub_missed}")
+    }
     Ok(all_subscriptions.get(&user_id).cloned())
 }
+
 pub async fn record_auth(user_id: i32) -> anyhow::Result<()> {
     let now = Utc::now().naive_utc();
 

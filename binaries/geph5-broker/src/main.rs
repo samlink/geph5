@@ -4,6 +4,7 @@ use clap::Parser;
 use database::database_gc_loop;
 use ed25519_dalek::SigningKey;
 
+use nano_influxdb::InfluxDbEndpoint;
 use nanorpc::{JrpcRequest, JrpcResponse, RpcService};
 use once_cell::sync::{Lazy, OnceCell};
 
@@ -12,11 +13,13 @@ use self_stat::self_stat_loop;
 use serde::Deserialize;
 use smolscale::immortal::{Immortal, RespawnStrategy};
 use std::{fmt::Debug, fs, net::SocketAddr, path::PathBuf, sync::LazyLock};
+use tikv_jemallocator::Jemalloc;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 mod auth;
 mod database;
-mod influxdb;
+
+mod free_voucher;
 mod news;
 mod payments;
 mod puzzle;
@@ -24,7 +27,8 @@ mod routes;
 mod rpc_impl;
 mod self_stat;
 
-use influxdb::InfluxDbEndpoint;
+#[global_allocator]
+static GLOBAL: Jemalloc = Jemalloc;
 
 /// The global config file.
 static CONFIG_FILE: OnceCell<ConfigFile> = OnceCell::new();

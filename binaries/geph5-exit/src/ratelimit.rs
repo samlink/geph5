@@ -85,20 +85,14 @@ pub async fn get_ratelimiter(level: AccountLevel, token: ClientToken) -> RateLim
         AccountLevel::Free => {
             FREE_RL_CACHE
                 .get_with(blake3::hash(&(level, token).stdcode()), async {
-                    RateLimiter::new(
-                        CONFIG_FILE.wait().free_ratelimit,
-                        CONFIG_FILE.wait().free_ratelimit,
-                    )
+                    RateLimiter::new(CONFIG_FILE.wait().free_ratelimit, 100)
                 })
                 .await
         }
         AccountLevel::Plus => {
             PLUS_RL_CACHE
                 .get_with(blake3::hash(&(level, token).stdcode()), async {
-                    RateLimiter::new(
-                        CONFIG_FILE.wait().plus_ratelimit,
-                        CONFIG_FILE.wait().plus_ratelimit * 5,
-                    )
+                    RateLimiter::new(CONFIG_FILE.wait().plus_ratelimit, 100)
                 })
                 .await
         }
@@ -158,20 +152,21 @@ impl RateLimiter {
         let mut total_bytes = 0;
 
         loop {
-            let bts = pooled_read(&mut read_stream)
+            let bts = pooled_read(&mut read_stream, 8192)
                 .timeout(Duration::from_secs(1800))
                 .await
                 .ok_or_else(|| {
                     std::io::Error::new(std::io::ErrorKind::TimedOut, "timeout in TCP read")
                 })??;
-            if bts.is_empty() {
-                break;
+            match bts {
+                None => break,
+                Some(bts) => {
+                    self.wait(bts.len()).await;
+
+                    write_stream.write_all(&bts).await?;
+                    total_bytes += bts.len() as u64;
+                }
             }
-
-            self.wait(bts.len()).await;
-
-            write_stream.write_all(&bts).await?;
-            total_bytes += bts.len() as u64;
         }
 
         Ok(total_bytes)

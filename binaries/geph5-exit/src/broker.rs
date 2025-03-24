@@ -1,8 +1,11 @@
 use std::{
     net::IpAddr,
     str::FromStr,
-    sync::atomic::{AtomicBool, Ordering},
-    time::{Duration, SystemTime},
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        LazyLock,
+    },
+    time::{Duration, Instant, SystemTime},
 };
 
 use async_trait::async_trait;
@@ -13,7 +16,7 @@ use reqwest::Method;
 use tap::Tap;
 
 use crate::{
-    ratelimit::{get_kbps, get_load, TOTAL_BYTE_COUNT},
+    ratelimit::{get_kbps, get_load},
     schedlag::SCHEDULER_LAG_SECS,
     tasklimit::get_task_count,
     watchdog::kick_watchdog,
@@ -33,6 +36,7 @@ impl BrokerRpcTransport {
             url: url.to_string(),
             client: reqwest::ClientBuilder::new()
                 .timeout(Duration::from_secs(10))
+                .http1_only()
                 .build()
                 .unwrap(),
         }
@@ -112,6 +116,13 @@ pub async fn broker_loop() -> anyhow::Result<()> {
 
                     client
                         .set_stat(format!("{server_name}.kbps"), get_kbps() as _)
+                        .await?;
+                    static START_TIME: LazyLock<Instant> = LazyLock::new(Instant::now);
+                    client
+                        .set_stat(
+                            format!("{server_name}.uptime"),
+                            START_TIME.elapsed().as_secs_f64(),
+                        )
                         .await?;
 
                     let load = get_load();
