@@ -1,7 +1,7 @@
-// use std::net::{Ipv4Addr, SocketAddrV4};
+use std::net::{Ipv4Addr, SocketAddrV4};
 
 use geph5_broker_protocol::Credential;
-// use base32::Alphabet;
+use base32::Alphabet;
 // use geph5_broker_protocol::Credential;
 use geph5_client::{BridgeMode, BrokerSource, Config};
 use isocountry::CountryCode;
@@ -44,11 +44,11 @@ pub fn get_config() -> anyhow::Result<Config> {
         username: USERNAME.get(),
         password: PASSWORD.get(),
     };
-    cfg.exit_constraint = match (SELECTED_COUNTRY.get(), SELECTED_CITY.get()) {
-        (Some(country), Some(city)) => ExitConstraint::CountryCity(country, city),
-        (Some(country), None) => ExitConstraint::Country(country),
-        _ => ExitConstraint::Auto,
-    };
+    // cfg.exit_constraint = match (SELECTED_COUNTRY.get(), SELECTED_CITY.get()) {
+    //     (Some(country), Some(city)) => ExitConstraint::CountryCity(country, city),
+    //     (Some(country), None) => ExitConstraint::Country(country),
+    //     _ => ExitConstraint::Auto,
+    // };
     cfg.bridge_mode = BRIDGE_MODE.get();
     if let Some(custom_broker) = CUSTOM_BROKER.get() {
         cfg.broker = Some(custom_broker);

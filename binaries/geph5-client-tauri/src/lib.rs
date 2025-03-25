@@ -1,17 +1,7 @@
 use native_dialog::MessageType;
-// use std::ffi::OsStr;
-// use std::ffi::OsString;
-// use std::net::TcpStream;
-// use std::os::windows::ffi::OsStrExt;
-// use std::os::windows::process::CommandExt;
-// use std::path::Path;
-// use std::process::{Command, Stdio};
-// use std::ptr::null_mut;
 use std::thread;
 use std::time::Duration;
 use tauri::Manager;
-// use winapi::um::shellapi::ShellExecuteW;
-// use winapi::um::winuser::SW_SHOWNORMAL;
 
 mod daemon;
 mod login;
@@ -85,9 +75,6 @@ fn connect(vpn: bool) -> String {
     while n > 0 {
         if is_proxy_port_open(&http_proxy) {
             set_http_proxy(http_proxy_listen).unwrap();
-            // if vpn {
-            //     configure_global_proxy_win();
-            // }
             break;
         } else {
             n -= 1;
@@ -110,110 +97,3 @@ async fn disconnect() -> String {
     unset_http_proxy().unwrap();
     return "disconnect".to_string();
 }
-
-// 全局代理
-fn configure_global_proxy_win() {
-    std::thread::spawn(|| {
-        let status = runas::Command::new("netsh")
-            .args(&[
-                "interface",
-                "portproxy",
-                "add",
-                "v4tov4",
-                "listenaddress=0.0.0.0",
-                "listenport=443",
-                "connectaddress=127.0.0.1",
-                "connectport=9909"
-            ])
-            .gui(true)
-            .show(false)
-            .status();
-
-        if let Err(e) = status {
-            eprintln!("Failed to configure global proxy: {}", e);
-        }
-    });
-}
-
-// 判断代理端口是否已经开放
-// fn is_proxy_port_open(proxy_host: &str, proxy_port: u16) -> bool {
-//     TcpStream::connect((proxy_host, proxy_port)).is_ok()
-// }
-
-// 执行管理员命令
-// fn run_system_command_win(command: &str) {
-
-    // unsafe {
-    //     let operation_wide: Vec<u16> = OsStr::new("runas")
-    //         .encode_wide()
-    //         .chain(Some(0).into_iter())
-    //         .collect();
-    //     let operation_ptr = operation_wide.as_ptr();
-
-    //     // 根据命令类型选择正确的程序
-    //     let program = if command.starts_with("netsh") {
-    //         "netsh.exe"
-    //     } else {
-    //         "reg.exe"
-    //     };
-
-    //     let program_wide: Vec<u16> = OsStr::new(program)
-    //         .encode_wide()
-    //         .chain(Some(0).into_iter())
-    //         .collect();
-    //     let program_ptr = program_wide.as_ptr();
-
-    //     let command_wide: Vec<u16> = OsString::from(command)
-    //         .encode_wide()
-    //         .chain(Some(0).into_iter())
-    //         .collect();
-    //     let command_ptr = command_wide.as_ptr();
-
-    //     ShellExecuteW(
-    //         null_mut(),
-    //         operation_ptr,
-    //         program_ptr,
-    //         command_ptr,
-    //         null_mut(),
-    //         SW_SHOWNORMAL,
-    //     );
-    // }
-// }
-
-// // 关闭 client.exe 且停止代理
-// fn stop_proxy(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
-//     let close_script = path.join("close.bat");
-//     let output = Command::new("cmd")
-//         .arg("/C")
-//         .arg(&close_script)
-//         .creation_flags(0x08000000)
-//         .stdout(Stdio::piped())
-//         .stderr(Stdio::piped())
-//         .spawn()?
-//         .wait_with_output()?; // 等待进程执行完成
-
-//     if !output.status.success() {
-//         let stderr = String::from_utf8_lossy(&output.stderr);
-//         return Err(format!("Error running close script: {}", stderr).into());
-//     }
-
-//     Ok(())
-// }
-
-// // 设置 http 代理
-// fn set_windows_proxy(proxy_address: &str) {
-//     let commands = vec![
-//         format!(
-//             "add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" /v ProxyEnable /t REG_DWORD /d 1 /f"
-//         ),
-//         format!(
-//             "add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" /v ProxyServer /t REG_SZ /d {} /f",
-//             proxy_address
-//         ),
-//     ];
-
-//     for command in commands {
-//         run_system_command_win(&command);
-//         thread::sleep(Duration::from_millis(200));
-//     }
-// }
