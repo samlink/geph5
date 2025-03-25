@@ -134,10 +134,14 @@ impl App {
             });
         });
 
-        let result = egui::CentralPanel::default().show(ctx, |ui| match self.selected_tab {
-            TabName::Dashboard => self.dashboard.render(ui),
-            TabName::Logs => self.logs.render(ui),
-            TabName::Settings => self.settings.render(ui),
+        let result = egui::CentralPanel::default().show(ctx, |ui| {
+            smol::future::block_on(async {
+                match self.selected_tab {
+                    TabName::Dashboard => self.dashboard.render(ui).await,
+                    TabName::Logs => self.logs.render(ui),
+                    TabName::Settings => self.settings.render(ui),
+                }
+            })
         });
 
         #[cfg(not(target_os = "android"))]
