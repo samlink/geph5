@@ -33,8 +33,6 @@ impl Daemon for SubprocDaemon {
         } else {
             let mut cmd = std::process::Command::new(".\\geph5-client");
 
-            // println!("{:?}", cfg_path);
-
             cmd.arg("-c").arg(cfg_path);
 
             #[cfg(windows)]

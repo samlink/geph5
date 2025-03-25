@@ -17,8 +17,6 @@ tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-tauri-plugin-dialog = "2"
-winapi = { version = "0.3", features = ["shellapi", "winuser"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["json"] }
 native-dialog = { version = "0.7.0", features = [
@@ -30,9 +28,13 @@ poll-promise = "0.3.0"
 smolscale = "0.4.7"
 futures-util = "0.3.30"
 smol = "2.0.0"
+runas = "1.2.0"
+
 geph5-broker-protocol = { path = "../../libraries/geph5-broker-protocol" }
 anyhow = "1.0.86"
 geph5-client = { path = "../geph5-client", features = ["windivert"] }
+nanorpc-sillad = { path = "../../libraries/nanorpc-sillad" }
+sillad = { path = "../../libraries/sillad" }
 
 once_cell = "1.19.0"
 smol_str = { version = "0.2.2", features = ["serde"] }
@@ -42,3 +44,7 @@ app_dirs2 = "2.5.5"
 moka = { version = "0.12.7", features = ["sync"] }
 
 egui = "0.28.1"
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.52.0"
+winapi = { version = "0.3.9", features = ["wininet"] }
