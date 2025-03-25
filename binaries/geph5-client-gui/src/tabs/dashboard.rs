@@ -8,7 +8,7 @@ use smol_timeout2::TimeoutExt;
 use crate::{
     daemon::{DAEMON_HANDLE, TOTAL_BYTES_TIMESERIES},
     l10n::{l10n, l10n_country},
-    pac::{set_http_proxy, unset_http_proxy, is_proxy_port_open},
+    pac::{is_proxy_port_open, set_http_proxy, unset_http_proxy},
     refresh_cell::RefreshCell,
     settings::{get_config, PROXY_AUTOCONF},
 };
@@ -29,7 +29,7 @@ impl Dashboard {
             conn_info: RefreshCell::new(),
         }
     }
-    pub fn render(&mut self, ui: &mut egui::Ui) -> anyhow::Result<()> {
+    pub async fn render(&mut self, ui: &mut egui::Ui) -> anyhow::Result<()> {
         let conn_info = self
             .conn_info
             .get_or_refresh(Duration::from_millis(200), || {
@@ -95,8 +95,14 @@ impl Dashboard {
                     DAEMON_HANDLE.start(get_config()?)?;
                     let http_proxy = format!("{}", get_config()?.http_proxy_listen.unwrap());
 
-                    if PROXY_AUTOCONF.get() && is_proxy_port_open(&http_proxy) {
-                        set_http_proxy(get_config()?.http_proxy_listen.unwrap())?;
+                    let mut n = 5;
+                    while n > 0 {
+                        if PROXY_AUTOCONF.get() && is_proxy_port_open(&http_proxy) {
+                            set_http_proxy(get_config()?.http_proxy_listen.unwrap())?;
+                            break;
+                        }
+                        n -= 1;
+                        std::thread::sleep(std::time::Duration::from_secs(1));
                     }
                 }
             } else if ui.button(l10n("disconnect")).clicked() {

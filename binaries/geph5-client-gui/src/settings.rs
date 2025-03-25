@@ -11,15 +11,56 @@ use smol_str::{SmolStr, ToSmolStr};
 
 use crate::store_cell::StoreCell;
 
+// pub static DEFAULT_SETTINGS: Lazy<serde_yaml::Value> = Lazy::new(|| {
+//     serde_yaml::from_str(include_str!("client.yaml")).unwrap()
+// });
+
+// pub fn get_config() -> anyhow::Result<Config> {
+//     let yaml: serde_yaml::Value = DEFAULT_SETTINGS.to_owned();
+//     let json: serde_json::Value = serde_json::to_value(&yaml)?;
+//     let mut cfg: Config = serde_json::from_value(json)?;
+//     cfg.credentials = Credential::LegacyUsernamePassword { username: USERNAME.get(), password: PASSWORD.get() };
+//     cfg.vpn = VPN_MODE.get();
+//     cfg.passthrough_china = PASSTHROUGH_CHINA.get();
+//     Ok(cfg)
+// }
+
 pub static DEFAULT_SETTINGS: Lazy<serde_yaml::Value> = Lazy::new(|| {
-    serde_yaml::from_str(include_str!("client.yaml")).unwrap()
+    serde_yaml::from_slice(
+        &base32::decode(
+            Alphabet::Crockford,
+            include_str!("settings_default.yaml.base32").trim(),
+        )
+        .expect("no base32 decode"),
+    )
+    .unwrap()
 });
 
 pub fn get_config() -> anyhow::Result<Config> {
     let yaml: serde_yaml::Value = DEFAULT_SETTINGS.to_owned();
     let json: serde_json::Value = serde_json::to_value(&yaml)?;
     let mut cfg: Config = serde_json::from_value(json)?;
-    cfg.credentials = Credential::LegacyUsernamePassword { username: USERNAME.get(), password: PASSWORD.get() };
+    cfg.credentials = Credential::LegacyUsernamePassword {
+        username: USERNAME.get(),
+        password: PASSWORD.get(),
+    };
+    cfg.exit_constraint = match (SELECTED_COUNTRY.get(), SELECTED_CITY.get()) {
+        (Some(country), Some(city)) => ExitConstraint::CountryCity(country, city),
+        (Some(country), None) => ExitConstraint::Country(country),
+        _ => ExitConstraint::Auto,
+    };
+    cfg.bridge_mode = BRIDGE_MODE.get();
+    if let Some(custom_broker) = CUSTOM_BROKER.get() {
+        cfg.broker = Some(custom_broker);
+    }
+    cfg.socks5_listen = Some(std::net::SocketAddr::V4(SocketAddrV4::new(
+        Ipv4Addr::new(127, 0, 0, 1),
+        SOCKS5_PORT.get(),
+    )));
+    cfg.http_proxy_listen = Some(std::net::SocketAddr::V4(SocketAddrV4::new(
+        Ipv4Addr::new(127, 0, 0, 1),
+        HTTP_PROXY_PORT.get(),
+    )));
     cfg.vpn = VPN_MODE.get();
     cfg.passthrough_china = PASSTHROUGH_CHINA.get();
     Ok(cfg)
