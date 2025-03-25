@@ -172,13 +172,9 @@ pub async fn check_login(username: String, password: String) -> Result<LoginResp
                         message: None,
                     })
                 }
-                Ok(Err(e)) => Ok(LoginResponse {
+                _ => Ok(LoginResponse {
                     success: false,
-                    message: Some(format!("Auth error: {:?}", e)),
-                }),
-                Err(e) => Ok(LoginResponse {
-                    success: false,
-                    message: Some(format!("RPC error: {:?}", e)),
+                    message: Some(format!("Error: {:?}", "Invalid username or password")),
                 }),
             }
         }

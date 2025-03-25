@@ -16,10 +16,10 @@ const stat = document.querySelector("#status");
 const messagep = document.querySelector(".msg p");
 
 window.onload = function () {
-  check_login();
+  is_login();
 };
 
-async function check_login() {
+async function is_login() {
   let result = await invoke("is_login", {});
 
   if (result == true) {
@@ -29,7 +29,6 @@ async function check_login() {
     loginForm.hidden = false;
     mainContent.hidden = true;
   }
-  
 }
 
 // 登录处理
@@ -59,7 +58,7 @@ loginBtn.addEventListener("click", async (e) => {
   }
 });
 
-// 连接和断开连接处理
+// 连接处理
 connectBtn.addEventListener("click", async (e) => {
   e.preventDefault();
   let connect = await invoke("connect", {});
@@ -74,6 +73,7 @@ connectBtn.addEventListener("click", async (e) => {
   }
 });
 
+// 断开处理
 disconnectBtn.addEventListener("click", async (e) => {
   e.preventDefault();
   let _ = await invoke("disconnect", {});
