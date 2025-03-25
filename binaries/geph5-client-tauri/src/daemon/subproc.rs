@@ -57,7 +57,7 @@ impl Daemon for SubprocDaemon {
         }))
     }
 
-    fn check_dead(&self) -> anyhow::Result<()> {
-        todo!()
-    }
+    // fn check_dead(&self) -> anyhow::Result<()> {
+    //     todo!()
+    // }
 }

@@ -7,9 +7,9 @@ use geph5_client::{Config, ControlClient};
 
 use once_cell::sync::Lazy;
 
-use crate::timeseries::TimeSeries;
+// use crate::timeseries::TimeSeries;
 
-pub static TOTAL_BYTES_TIMESERIES: TimeSeries = TimeSeries::new(60 * 600);
+// pub static TOTAL_BYTES_TIMESERIES: TimeSeries = TimeSeries::new(60 * 600);
 
 #[cfg(unix)]
 pub static DAEMON_HANDLE: Lazy<Arc<dyn Daemon>> =
@@ -24,5 +24,5 @@ pub trait Daemon: Sync + Send + 'static {
     fn stop(&self) -> anyhow::Result<()>;
     fn control_client(&self) -> ControlClient;
 
-    fn check_dead(&self) -> anyhow::Result<()>;
+    // fn check_dead(&self) -> anyhow::Result<()>;
 }

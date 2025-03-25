@@ -19,7 +19,7 @@ mod pac;
 mod prefs;
 mod settings;
 mod store_cell;
-mod timeseries;
+// mod timeseries;
 
 use daemon::DAEMON_HANDLE;
 use pac::{is_proxy_port_open, set_http_proxy, unset_http_proxy};

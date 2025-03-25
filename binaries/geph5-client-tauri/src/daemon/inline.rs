@@ -37,7 +37,7 @@ impl Daemon for InlineDaemon {
         }
     }
 
-    fn check_dead(&self) -> anyhow::Result<()> {
-        todo!()
-    }
+    // fn check_dead(&self) -> anyhow::Result<()> {
+    //     todo!()
+    // }
 }

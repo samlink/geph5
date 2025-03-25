@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "geph5-client-tauri",
+  "productName": "Geph5 Client",
   "version": "0.1.0",
-  "identifier": "com.gephui.app",
+  "identifier": "io.geph.geph5",
   "build": {
     "frontendDist": "./front"
   },
@@ -10,7 +10,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "gephui",
+        "title": "Geph5 Client",
         "label": "main",
         "width": 550,
         "height": 300
