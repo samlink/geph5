@@ -61,12 +61,13 @@ loginBtn.addEventListener("click", async (e) => {
 // 连接处理
 connectBtn.addEventListener("click", async (e) => {
   e.preventDefault();
-  let connect = await invoke("connect", {});
+  let connect = await invoke("connect", {vpn: vpnCheck.checked});
   if (connect == "success") {
     stat.textContent = "已连接";
     stat.classList.add('set-color');
     messagep.textContent = "地址端口为 http（127.0.0.1:9910） socks5（127.0.0.1：9909）";
     connectBtn.disabled = true;
+    vpnCheck.disabled = true;
   } else {
     stat.textContent = "未连接";
     messagep.textContent = "连接失败";
@@ -81,4 +82,5 @@ disconnectBtn.addEventListener("click", async (e) => {
   stat.classList.remove('set-color');
   messagep.textContent = "地址端口未连接";
   connectBtn.disabled = false;
+  vpnCheck.disabled = false;
 });

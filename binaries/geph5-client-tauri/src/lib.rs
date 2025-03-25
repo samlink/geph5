@@ -24,8 +24,8 @@ mod timeseries;
 use daemon::DAEMON_HANDLE;
 use pac::{is_proxy_port_open, set_http_proxy, unset_http_proxy};
 // refresh_cell::RefreshCell,
-use settings::get_config;
 use login::check_login;
+use settings::{VPN_MODE, get_config};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -74,7 +74,8 @@ fn is_login() -> bool {
 }
 
 #[tauri::command]
-fn connect() -> String {
+fn connect(vpn: bool) -> String {
+    VPN_MODE.set(vpn);
     DAEMON_HANDLE.start(get_config().unwrap()).unwrap();
     let http_proxy_listen = get_config().unwrap().http_proxy_listen.unwrap();
     let http_proxy = format!("{}", http_proxy_listen);
@@ -102,7 +103,6 @@ fn connect() -> String {
 
 #[tauri::command]
 async fn disconnect() -> String {
-    tracing::warn!("disconnect clicked");
     DAEMON_HANDLE.stop().unwrap();
     unset_http_proxy().unwrap();
     return "disconnect".to_string();

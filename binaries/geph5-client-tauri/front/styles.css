@@ -192,7 +192,7 @@ button {
   display: inline-block;
   position: relative;
   padding-left: 25px;
-  /* cursor: pointer; */
+  cursor: pointer;
   font-size: 14px;
 
   -webkit-user-select: none;
