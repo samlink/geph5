@@ -22,10 +22,11 @@ impl Daemon for SubprocDaemon {
             serde_yaml::to_string(&serde_json::to_value(&cfg)?)?,
         )?;
         if cfg.vpn {
-            std::thread::spawn(|| {
+            let cfg_path = cfg_path.clone();
+            std::thread::spawn(move || {
                 runas::Command::new(".\\geph5-client")
                     .arg("-c")
-                    .arg(cfg_path)
+                    .arg(&cfg_path)
                     .gui(true)
                     .show(false)
                     .status()

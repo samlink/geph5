@@ -85,6 +85,9 @@ fn connect(vpn: bool) -> String {
     while n > 0 {
         if is_proxy_port_open(&http_proxy) {
             set_http_proxy(http_proxy_listen).unwrap();
+            // if vpn {
+            //     configure_global_proxy_win();
+            // }
             break;
         } else {
             n -= 1;
@@ -108,14 +111,29 @@ async fn disconnect() -> String {
     return "disconnect".to_string();
 }
 
-// // 全局代理
-// fn configure_global_proxy_win() {
-//     let command = format!(
-//         "netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=443 connectaddress=127.0.0.1 connectport=9909"
-//     );
-//     run_system_command_win(&command);
-//     thread::sleep(Duration::from_millis(500)); // 添加延迟确保命令执行完成
-// }
+// 全局代理
+fn configure_global_proxy_win() {
+    std::thread::spawn(|| {
+        let status = runas::Command::new("netsh")
+            .args(&[
+                "interface",
+                "portproxy",
+                "add",
+                "v4tov4",
+                "listenaddress=0.0.0.0",
+                "listenport=443",
+                "connectaddress=127.0.0.1",
+                "connectport=9909"
+            ])
+            .gui(true)
+            .show(false)
+            .status();
+
+        if let Err(e) = status {
+            eprintln!("Failed to configure global proxy: {}", e);
+        }
+    });
+}
 
 // 判断代理端口是否已经开放
 // fn is_proxy_port_open(proxy_host: &str, proxy_port: u16) -> bool {
@@ -124,41 +142,42 @@ async fn disconnect() -> String {
 
 // 执行管理员命令
 // fn run_system_command_win(command: &str) {
-//     unsafe {
-//         let operation_wide: Vec<u16> = OsStr::new("runas")
-//             .encode_wide()
-//             .chain(Some(0).into_iter())
-//             .collect();
-//         let operation_ptr = operation_wide.as_ptr();
 
-//         // 根据命令类型选择正确的程序
-//         let program = if command.starts_with("netsh") {
-//             "netsh.exe"
-//         } else {
-//             "reg.exe"
-//         };
+    // unsafe {
+    //     let operation_wide: Vec<u16> = OsStr::new("runas")
+    //         .encode_wide()
+    //         .chain(Some(0).into_iter())
+    //         .collect();
+    //     let operation_ptr = operation_wide.as_ptr();
 
-//         let program_wide: Vec<u16> = OsStr::new(program)
-//             .encode_wide()
-//             .chain(Some(0).into_iter())
-//             .collect();
-//         let program_ptr = program_wide.as_ptr();
+    //     // 根据命令类型选择正确的程序
+    //     let program = if command.starts_with("netsh") {
+    //         "netsh.exe"
+    //     } else {
+    //         "reg.exe"
+    //     };
 
-//         let command_wide: Vec<u16> = OsString::from(command)
-//             .encode_wide()
-//             .chain(Some(0).into_iter())
-//             .collect();
-//         let command_ptr = command_wide.as_ptr();
+    //     let program_wide: Vec<u16> = OsStr::new(program)
+    //         .encode_wide()
+    //         .chain(Some(0).into_iter())
+    //         .collect();
+    //     let program_ptr = program_wide.as_ptr();
 
-//         ShellExecuteW(
-//             null_mut(),
-//             operation_ptr,
-//             program_ptr,
-//             command_ptr,
-//             null_mut(),
-//             SW_SHOWNORMAL,
-//         );
-//     }
+    //     let command_wide: Vec<u16> = OsString::from(command)
+    //         .encode_wide()
+    //         .chain(Some(0).into_iter())
+    //         .collect();
+    //     let command_ptr = command_wide.as_ptr();
+
+    //     ShellExecuteW(
+    //         null_mut(),
+    //         operation_ptr,
+    //         program_ptr,
+    //         command_ptr,
+    //         null_mut(),
+    //         SW_SHOWNORMAL,
+    //     );
+    // }
 // }
 
 // // 关闭 client.exe 且停止代理

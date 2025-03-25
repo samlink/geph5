@@ -17,6 +17,8 @@ tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+tauri-plugin-dialog = "2"
+# winapi = { version = "0.3", features = ["shellapi", "winuser"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["json"] }
 native-dialog = { version = "0.7.0", features = [
