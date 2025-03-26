@@ -1,3 +1,4 @@
 /target
 test.yaml
 /binaries/geph5-client-gui/src/client.yaml
+.DS_Store
