@@ -43,7 +43,11 @@ pub fn run() {
             // 监听窗口关闭事件
             main_window.on_window_event(move |event| {
                 if let tauri::WindowEvent::CloseRequested { .. } = event {
-                    let _ = unset_http_proxy().unwrap();
+                    let http_proxy_listen = get_config().unwrap().http_proxy_listen.unwrap();
+                    let http_proxy = format!("{}", http_proxy_listen);
+                    if is_proxy_port_open(&http_proxy) {
+                        let _ = unset_http_proxy().unwrap();
+                    }
                 }
             });
 
