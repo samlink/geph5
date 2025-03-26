@@ -1,4 +1,4 @@
-use native_dialog::MessageType;
+// use native_dialog::MessageType;
 use std::thread;
 use std::time::Duration;
 use tauri::Manager;
@@ -9,7 +9,6 @@ mod pac;
 mod prefs;
 mod settings;
 mod store_cell;
-// mod timeseries;
 
 use daemon::DAEMON_HANDLE;
 use pac::{is_proxy_port_open, set_http_proxy, unset_http_proxy};
