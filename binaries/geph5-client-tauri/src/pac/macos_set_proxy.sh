@@ -1,5 +1,8 @@
 #!/bin/bash
 
+proxy_server="127.0.0.1" # 例如: 192.168.1.100 或 proxy.example.com
+port="9910"  
+
 # AppleScript to request administrator privileges and run the script
 osascript -e 'do shell script "
 # Get the list of network services
