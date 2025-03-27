@@ -1,4 +1,4 @@
-use egui::mutex::RwLock;
+use std::sync::RwLock;
 use serde::{de::DeserializeOwned, Serialize};
 use smol_str::ToSmolStr;
 
@@ -10,29 +10,29 @@ pub struct StoreCell<T: Clone> {
 }
 
 impl<T: Clone> StoreCell<T> {
-    // pub fn new(default_val: T) -> Self {
-    //     Self {
-    //         inner: RwLock::new(default_val),
-    //         on_set: Box::new(|_| {}),
-    //     }
-    // }
+    pub fn new(default_val: T) -> Self {
+        Self {
+            inner: RwLock::new(default_val),
+            on_set: Box::new(|_| {}),
+        }
+    }
 
     pub fn set(&self, val: T) -> T {
-        let mut inner = self.inner.write();
+        let mut inner = self.inner.write().unwrap();
         (self.on_set)(&val);
         std::mem::replace(&mut inner, val)
     }
 
     pub fn get(&self) -> T {
-        self.inner.read().clone()
+        self.inner.read().unwrap().clone()
     }
 
-    // pub fn modify<U>(&self, clos: impl FnOnce(&mut T) -> U) -> U {
-    //     let mut inner = self.inner.write();
-    //     let u = clos(&mut inner);
-    //     (self.on_set)(&inner);
-    //     u
-    // }
+    pub fn modify<U>(&self, clos: impl FnOnce(&mut T) -> U) -> U {
+        let mut inner = self.inner.write().unwrap();
+        let u = clos(&mut inner);
+        (self.on_set)(&inner);
+        u
+    }
 }
 
 impl<T: Clone + Serialize + DeserializeOwned> StoreCell<T> {

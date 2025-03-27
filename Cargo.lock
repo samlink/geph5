@@ -3955,7 +3955,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "app_dirs2",
- "egui",
  "futures-util",
  "geph5-broker-protocol",
  "geph5-client",

@@ -45,7 +45,7 @@ isocountry = "0.3.2"
 app_dirs2 = "2.5.5"
 moka = { version = "0.12.7", features = ["sync"] }
 
-egui = "0.28.1"
+# egui = "0.28.1"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.52.0"
